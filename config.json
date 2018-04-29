@@ -1,0 +1,6 @@
+{
+  "port": "9999",
+  "secretLength": 10,
+  "url": "http://test.skepticfx.com",
+  "secretPrefix": "sessionId="
+}
