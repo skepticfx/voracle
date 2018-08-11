@@ -3,7 +3,7 @@ const app = express()
 const expressWs = require('express-ws')(app)
 
 const config = require('./config.json')
-let oracleLib = require('./oracle')
+let oracleLib = require('./oracle-ovpn3')
 let oracle = null
 
 app.use(express.static('public'))
@@ -13,7 +13,7 @@ app.get('/', (req, res) => res.send('Voracle attack server!'))
 app.get('/events/mitm/length/:len', (req, res) => {
   const len = parseInt(req.params.len)
   // console.log(len)
-  oracle.emit('packet_length', len)
+  if (oracle !== null) { oracle.emit('packet_length', len) }
   res.status(200)
   res.send('')
 })

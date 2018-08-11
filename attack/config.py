@@ -1,6 +1,7 @@
 settings = {
-    'payload_min_length': 400,
-    'payload_max_length': 700,
+    'payload_min_length': 500,
+    'payload_max_length': 600,
     'port': 1194,
-    'attacker_webhook': 'http://localhost:9999/events/mitm/length/'
+    'protocol': 'udp',
+    'attacker_webhook': 'http://localhost:9000/events/mitm/length/'
 }

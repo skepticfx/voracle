@@ -1,0 +1,155 @@
+<html lang="">
+<head>
+    <meta charSet="utf-8"/>
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+    <title>
+        Voracle
+    </title>
+    <meta name="description" content="A simple HTTP WebApp"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <link rel="icon" href="favicon.ico"/>
+    <link rel="stylesheet" href="styles.css"/>
+</head>
+<body style="background: #ffffff;">
+<div style="font-family:&#x27;Noto Sans&#x27;,Helvetica,Arial,sans-serif;font-size:13px">
+    <div>
+        <header class="header" style="color:#fff;font-weight:400">
+            <div class="wr">
+                <a id="headerLogo" href="/" class="header__logo" style="font-weight:700">
+                    Voracle
+                </a>
+                <nav id="headerNav" class="header__nav">
+                    <a href="https://voracle.skepticfx.com" class="btn btn--c btn--plain" style="color:#2996cc">
+                        Voracle Attack
+                    </a>
+                    <div class="header__navCtas">
+                    </div>
+                </nav>
+                <nav id="headerMenu" class="header__nav header__nav--hidden">
+                    <button id="headerMenuButton" class="btn btn--c btn--primary" style="color:#fff;background-color:#2996cc">
+                        Menu
+                    </button>
+                </nav>
+                <nav id="headerDrawer" class="headerMenu">
+                    <div id="headerDrawerBackdrop" class="headerMenu__backdrop">
+                    </div>
+                    <ul class="headerMenu__links">
+                        <li>
+                            <a href="https://voracle.skepticfx.com" class="btn btn--c btn--plain" style="color:#2996cc">
+                                Voracle Attack
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://whynohttps.com" class="btn btn--c btn--plain" style="color:#2996cc">
+                                WhyNoHttps?
+                            </a>
+                        </li>
+                    </ul>
+                    <button id="headerDrawerClose" class="headerMenu__close btn">
+                        Close
+                    </button>
+                </nav>
+            </div>
+            <script>
+              function getRandom(){
+                let rand = Math.random().toString().substr(2,7).toString();
+                if(rand.includes('0') || isRepeating(rand)) return getRandom();
+                return rand;
+              }
+
+              function isRepeating(str){
+                return str.toString().split("").some(function(v,i,a){return a.lastIndexOf(v)!=i;});
+              }
+              function doStuff(){
+                document.cookie='sessionId='+ getRandom();
+                document.getElementById('showCookie').innerText = document.cookie.toString();
+              }
+
+              (function() {
+                var buffer = 10;
+                var margin = 60 + 40 + buffer;
+                // button
+                var button = document.getElementById('headerMenuButton');
+                var buttonWrapper = document.getElementById('headerMenu');
+                // drawer
+                var drawer = document.getElementById('headerDrawer');
+                var drawerBackdrop = document.getElementById('headerDrawerBackdrop');
+                var drawerClose = document.getElementById('headerDrawerClose');
+                // header UI
+                var logo = document.getElementById('headerLogo');
+                var nav = document.getElementById('headerNav');
+                var logoWidth = logo.offsetWidth;
+                var navWidth = nav.offsetWidth;
+
+                var determineVisibility = function() {
+                  var parent = window.innerWidth;
+                  if (logoWidth + navWidth > parent - margin) {
+                    nav.classList.add('header__nav--hidden');
+                    buttonWrapper.classList.add('headerMenu--visible');
+                  } else {
+                    nav.classList.remove('header__nav--hidden');
+                    buttonWrapper.classList.remove('headerMenu--visible');
+                  }
+                };
+
+                var showDrawer = function() {
+                  drawer.classList.add('headerMenu--visible');
+                };
+
+                var hideDrawer = function() {
+                  drawer.classList.remove('headerMenu--visible');
+                };
+
+                button.onclick = showDrawer;
+                drawerBackdrop.onclick = hideDrawer;
+                drawerClose.onclick = hideDrawer;
+
+                window.addEventListener('resize', determineVisibility);
+                determineVisibility();
+                window.addEventListener('load', () => {
+                  document.getElementById('showCookie').innerText = document.cookie.toString();
+                })
+              })();
+            </script>
+        </header>
+    </div>
+    <div>
+        <div class="section section--hero" style="background-color:#000">
+            <div class="wr heroWr heroWr--center">
+                <div class="heroWrapper heroWrapper--center">
+                    <h1 class="hero__title" style="color:#fff;font-weight:700;font-family:&#x27;Noto Serif&#x27;, Georgia, serif">
+                        insecure.skepticfx.com
+                    </h1>
+                    <h2 class="hero__subtitle" style="color:#fff;font-weight:400">
+                        This is a proof of concept application which is served entirely using HTTP. Ideally, the session cookies in this app cannot be stolen if served over a secure VPN Tunnel.
+                    </h2>
+                    <div class="hero__ctas">
+                        <a href="#" onclick="doStuff();" class="btn btn--c btn--primary btn--large" style="color:#fff;background-color:#2996cc">
+                            Randomize Session Cookie
+                        </a>
+                    </div>
+                    <h1 class="hero__title" style="color:#fff;font-weight:700;font-family:&#x27;Noto Serif&#x27;, Georgia, serif">
+                        Current SessionID: <span id="showCookie"></span></span>
+                    </h1>
+                </div>
+                <div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <footer class="section section--footer" style="background-color:#000">
+            <div class="wr">
+                <div class="footer" style="color:#fff;font-weight:400">
+                    <div class="footer__primary">
+                <span>
+                </span>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+</body>
+</html>

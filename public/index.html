@@ -1,19 +1,149 @@
-<html>
-<link rel="stylesheet" href="basic.css" />
-<link rel="stylesheet" href="style.css" />
-<script src="voracle.js"></script>
 
-<body>
-    <h1> Voracle </h1>
-    <h2>Compression Oracle Attack on an HTTP website over an OpenVPN connection.</h2>
-    <h4>Trying to guess the secret cookie for <span id="span-url"></span></h4>
-    <br/>
-    <br/>
-    <br/>
 
-    <h1><span id="secret-prefix"></span><span id="result"></span><span id="spinner"></span></h1>
-    <br/>
-    <br/>
-    <h4 id="final"></h4>
-</body>
+
+<html lang="">
+  <head>
+    <meta charSet="utf-8"/>
+    <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+    <title>
+      Voracle Attack
+    </title>
+    <script src="voracle.js"></script>
+    <meta name="description" content="Compression Oracle attacks on VPN"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <link rel="stylesheet" href="styles.css"/>
+  </head>
+  <body>
+    <div style="font-family:&#x27;Open Sans&#x27;, Arial, serif;font-size:15px">
+      <div>
+        <header class="header" style="color:rgba(255,255,255,1);font-weight:400">
+          <div class="wr">
+            <a id="headerLogo" href="/" class="header__logo" style="font-weight:400">
+              Voracle
+            </a>
+            <nav id="headerNav" class="header__nav">
+              <div class="header__navCtas">
+                <a href="https://github.com/skepticfx/voracle" class="btn btn--a btn--primary" style="color:#000">
+                  Source Code
+                </a>
+              </div>
+            </nav>
+            <nav id="headerMenu" class="header__nav header__nav--hidden">
+              <button id="headerMenuButton" class="btn btn--a btn--primary" style="color:#000">
+                Menu
+              </button>
+            </nav>
+            <nav id="headerDrawer" class="headerMenu">
+              <div id="headerDrawerBackdrop" class="headerMenu__backdrop">
+              </div>
+              <ul class="headerMenu__links">
+                <li>
+                  <a href="https://github.com/skepticfx/voracle" class="btn btn--a btn--primary" style="color:#000">
+                    Source Code
+                  </a>
+                </li>
+              </ul>
+              <button id="headerDrawerClose" class="headerMenu__close btn">
+                Close
+              </button>
+            </nav>
+          </div>
+          <script>
+            (function() {
+              var buffer = 10;
+              var margin = 60 + 40 + buffer;
+              // button
+              var button = document.getElementById('headerMenuButton');
+              var buttonWrapper = document.getElementById('headerMenu');
+              // drawer
+              var drawer = document.getElementById('headerDrawer');
+              var drawerBackdrop = document.getElementById('headerDrawerBackdrop');
+              var drawerClose = document.getElementById('headerDrawerClose');
+              // header UI
+              var logo = document.getElementById('headerLogo');
+              var nav = document.getElementById('headerNav');
+              var logoWidth = logo.offsetWidth;
+              var navWidth = nav.offsetWidth;
+            
+              var determineVisibility = function() {
+                var parent = window.innerWidth;
+                if (logoWidth + navWidth > parent - margin) {
+                  nav.classList.add('header__nav--hidden');
+                  buttonWrapper.classList.add('headerMenu--visible');
+                } else {
+                  nav.classList.remove('header__nav--hidden');
+                  buttonWrapper.classList.remove('headerMenu--visible');
+                }
+              };
+            
+              var showDrawer = function() {
+                drawer.classList.add('headerMenu--visible');
+              };
+            
+              var hideDrawer = function() {
+                drawer.classList.remove('headerMenu--visible');
+              };
+            
+              button.onclick = showDrawer;
+              drawerBackdrop.onclick = hideDrawer;
+              drawerClose.onclick = hideDrawer;
+            
+              window.addEventListener('resize', determineVisibility);
+              determineVisibility();
+            })();
+          </script>
+        </header>
+      </div>
+      <div>
+        <div class="section section--hero" style="background-color:rgba(40,39,64,1)">
+          <div class="wr heroWr heroWr--center">
+            <div class="heroWrapper heroWrapper--center" style="--margin-top-scale:0.4;--margin-bottom-scale:2">
+              <h1 class="hero__title" style="color:rgba(255,255,255,1);font-weight:400;font-family:&#x27;Patua One&#x27;, monospace">
+                Compression Oracle Attack on  HTTP websites over  VPN tunnels
+              </h1>
+              <h2 class="hero__subtitle" style="color:#fff;font-weight:400">
+                This is a proof of concept for the Voracle attack
+              </h2>
+              <div class="hero__ctas">
+                <a href="#" onclick="startAttack();" class="btn btn--a btn--primary btn--large" style="color:#000">
+                  Leak the Secret Cookie please!
+                </a>
+              </div>
+
+              <div class="hero__ctas">
+                <h2 style="color:#fff;font-weight:400; display: none" id="guessSpan">Trying to guess the secret cookie for <span id="span-url"></span></h2>
+              </div>
+
+              <div class="hero__ctas">
+                <h2  style="color:#fff;font-weight:400"><span id="secret-prefix"></span><span id="result"></span><span id="spinner"></span></h2>
+              </div>
+
+
+              <div class="hero__ctas">
+                <h2 style="color:#fff;font-weight:400; display: none;" id="final"></h2>
+              </div>
+
+            </div>
+            <div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <div>
+        <footer class="section section--footer" style="background-color:rgba(40,39,64,1)">
+          <div class="wr">
+            <div class="footer" style="color:#fff;font-weight:400">
+              <div class="footer__primary">
+                <span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </body>
 </html>

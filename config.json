@@ -1,6 +1,6 @@
 {
-  "port": "9999",
-  "secretLength": 10,
-  "url": "http://test.skepticfx.com",
-  "secretPrefix": "sessionId="
+  "port": "9000",
+  "secretLength": 7,
+  "url": "http://insecure.skepticfx.com",
+  "secretPrefix": "Cookie: sessionId="
 }

